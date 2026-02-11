@@ -6,13 +6,13 @@ BuySmart Agent is designed as a modular, production-ready AI system following cl
 
 ```mermaid
 graph TD
-    User[User / Buyer] -->|Natural Language Query<br>Criteria & Preferences| Dashboard[Frontend Dashboard]
-    Dashboard -->|REST / WebSocket| Backend[Backend Service<br>(Django + DRF)]
-    Backend -->|Orchestration & Reasoning| Agent[Buying Agent Layer]
-    Agent -->|Web Tool Call| Crawler[Crawl4AI<br>Async Web Crawler]
-    Agent -->|LLM Reasoning & Extraction| LLM[External LLM Provider<br>Claude / GPT-4o / Groq]
-    Crawler -->|Raw HTML / Structured Data| Agent
+    User["User / Buyer"] -->|Natural Language Query\nCriteria & Preferences| Dashboard["Frontend Dashboard"]
+    Dashboard -->|REST API| Backend["Backend Service\n(Django + DRF)"]
+    Backend -->|Orchestrate| Agent["Buying Agent Layer"]
+    Agent -->|Tool Call| Crawler["Crawl4AI\nAsync Web Crawler"]
+    Agent -->|Reasoning & Extraction| LLM["LLM Provider\n(Claude / GPT-4o / Groq)"]
+    Crawler -->|Raw / Structured Data| Agent
     Agent -->|Ranked Results & Rationale| Backend
     Backend -->|JSON Response| Dashboard
-    Backend <-->|Persistence| Database[(PostgreSQL)]
-    Backend <-->|Async Tasks & Caching| Redis[(Redis)]
+    Backend <-->|Persistence| Database["PostgreSQL"]
+    Backend <-->|Async Tasks & Caching| Redis["Redis\n(Celery + Caching)"]

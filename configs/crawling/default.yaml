@@ -1,0 +1,4 @@
+# Crawling Configs
+user_agent: "BuySmartAgent/0.1"
+timeout: 30
+max_depth: 3

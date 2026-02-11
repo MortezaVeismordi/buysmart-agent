@@ -1,0 +1,7 @@
+app:
+  name: buysmart-agent
+  domain: procurement
+  version: 0.1.0
+
+database:
+  engine: django.db.backends.postgresql

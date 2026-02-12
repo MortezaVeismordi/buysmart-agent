@@ -46,8 +46,8 @@ class BaseModel(models.Model):
         verbose_name="Deleted At"
     )
 
-    objects = SoftDeleteManager()       # default: non-deleted only
-    all_objects = models.Manager()      # access all records including deleted
+    objects = AdvancedManager()      # default: non-deleted only
+    all_objects = AllObjectsManager()      # access all records including deleted(NEW VERSION)
 
     class Meta:
         abstract = True

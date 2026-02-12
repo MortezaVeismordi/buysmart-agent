@@ -1,8 +1,81 @@
-.env
+# Python / Django
 __pycache__/
+*.py[cod]
 *.pyc
-.pytest_cache/
-node_modules/
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+*.egg-info/
 dist/
 build/
+*.egg
+*.so
+*.egg-link
+*.eggs/
+*.manifest
+*.spec
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+.env
+
+# Django
+*.log
+*.pot
+*.pyc
+*.sqlite3
+media/
+staticfiles/
+
+# Node / Frontend (اگر React/Next.js داری)
+node_modules/
+.npm
+.next/
+dist/
+build/
+coverage/
+*.log
+
+# IDE / Editor
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
 .DS_Store
+Thumbs.db
+ehthumbs.db
+Icon?
+._*
+
+# Misc
+*.bak
+*.swp
+*.swo
+*.tmp
+*.temp
+*.cache
+
+# Secrets & local config
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testing / Coverage
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+*.coverage
+.tox/
+.nox/
+.pytest_cache/

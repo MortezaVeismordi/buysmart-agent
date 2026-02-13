@@ -1,22 +1,57 @@
+[tool.poetry]
+name = "buysmart-agent"
+version = "0.1.0"
+description = "AI-powered buy-side procurement agent"
+authors = ["Morteza Veismordi <your.email@example.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/MortezaVeismordi/buysmart-agent"
+repository = "https://github.com/MortezaVeismordi/buysmart-agent"
+keywords = ["ai", "agent", "procurement", "django", "llm", "crawl4ai"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Framework :: Django :: 5.0",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+django = "^5.0"
+djangorestframework = "^3.15"
+djangorestframework-simplejwt = "^5.3"
+psycopg2-binary = "^2.9"                
+redis = "^5.0"
+celery = "^5.4"
+crawl4ai = "^0.3"                       
+langchain = "^0.1"                       
+litellm = "^1.0"                         
+python-dotenv = "^1.0"
+asgiref = "^3.8"                          
+django-cors-headers = "^4.3"             
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+pytest-django = "^4.8"
+black = "^24.0"
+isort = "^5.13"
+pre-commit = "^3.7"
+mypy = "^1.10"
+ruff = "^0.2"                            
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poetry]
-name = "buysmart-agent"
-version = "0.1.0"
-description = "Autonomous procurement assistant"
-authors = ["Your Name <you@example.com>"]
+[tool.black]
+line-length = 100
 
-[tool.poetry.dependencies]
-python = "^3.10"
-django = "^4.2"
-psycopg2-binary = "^2.9"
-redis = "^4.5"
-celery = "^5.3"
-openai = "^1.0"
+[tool.isort]
+profile = "black"
+line_length = 100
 
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.3"
-black = "^23.3"
-flake8 = "^6.0"
+[tool.ruff]
+line-length = 100
+target-version = "py310"

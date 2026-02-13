@@ -1,294 +1,213 @@
 from django.db import models
-from django.utils.translation import gettext_lazy as _
-from django.core.validators import MinValueValidator
 from src.core.models import BaseModel, User
-from decimal import Decimal
 
 
-class SearchQuery(BaseModel):
-    """
-    User's natural language procurement/search request.
-    Core entry point for the agent workflow.
-    """
+class ProductQuery(BaseModel):
+    """User's natural language search query."""
     user = models.ForeignKey(
-        User,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="search_queries",
-        verbose_name=_("User"),
-        help_text=_("Authenticated user who submitted the query")
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='queries',
+        help_text="User who created this query"
     )
     query_text = models.TextField(
-        verbose_name=_("Query Text"),
-        help_text=_("Raw natural language input from user")
+        help_text="Natural language query (e.g., 'best wireless headphones under $200')"
     )
     parsed_intent = models.JSONField(
-        null=True,
-        blank=True,
-        verbose_name=_("Parsed Intent"),
-        help_text=_("LLM-extracted structured intent (criteria, budget, etc.)")
+        null=True, 
+        blank=True, 
+        help_text="LLM-parsed intent with extracted entities"
     )
     status = models.CharField(
-        max_length=32,
-        default="pending",
+        max_length=20,
         choices=[
-            ("pending", _("Pending")),
-            ("processing", _("Processing")),
-            ("completed", _("Completed")),
-            ("failed", _("Failed")),
-            ("cancelled", _("Cancelled")),
+            ('pending', 'Pending'),
+            ('processing', 'Processing'),
+            ('completed', 'Completed'),
+            ('failed', 'Failed'),
         ],
-        verbose_name=_("Status"),
-        db_index=True
+        default='pending'
     )
     error_message = models.TextField(
-        blank=True,
-        verbose_name=_("Error Message")
-    )
-    total_results = models.PositiveIntegerField(
-        default=0,
-        verbose_name=_("Total Results Found")
-    )
-
-    class Meta:
-        verbose_name = _("Search Query")
-        verbose_name_plural = _("Search Queries")
-        indexes = [
-            models.Index(fields=["status", "created_at"]),
-            models.Index(fields=["user", "created_at"]),
-        ]
-        ordering = ["-created_at"]
-
-    def __str__(self) -> str:
-        return f"Query '{self.query_text[:60]}...' ({self.status})"
-
-
-class CrawlSource(BaseModel):
-    """
-    Reusable web source / supplier domain configuration.
-    Can be used across multiple queries.
-    """
-    name = models.CharField(
-        max_length=255,
-        verbose_name=_("Source Name"),
-        help_text=_("Display name of the supplier/website")
-    )
-    base_url = models.URLField(
-        verbose_name=_("Base URL"),
-        unique=True,
-        help_text=_("Root domain or main page")
-    )
-    is_active = models.BooleanField(
-        default=True,
-        verbose_name=_("Is Active")
-    )
-    priority = models.PositiveSmallIntegerField(
-        default=10,
-        verbose_name=_("Priority"),
-        help_text=_("Lower number = higher priority in crawling")
-    )
-    crawl_frequency = models.DurationField(
         null=True,
         blank=True,
-        verbose_name=_("Crawl Frequency"),
-        help_text=_("Recommended crawl interval")
+        help_text="Error details if query failed"
     )
-    robots_txt_compliant = models.BooleanField(
-        default=True,
-        verbose_name=_("Robots.txt Compliant")
-    )
-
+    
     class Meta:
-        verbose_name = _("Crawl Source")
-        verbose_name_plural = _("Crawl Sources")
-        ordering = ["priority", "name"]
-        indexes = [models.Index(fields=["is_active", "priority"])]
+        verbose_name = "Product Query"
+        verbose_name_plural = "Product Queries"
+        ordering = ["-created_at"]
 
-    def __str__(self) -> str:
-        return f"{self.name} ({self.base_url})"
+    def __str__(self):
+        return f"{self.user.username}: {self.query_text[:50]}..."
 
 
-class CrawlResult(BaseModel):
-    """
-    Individual crawl execution result linked to a search query.
-    """
-    search_query = models.ForeignKey(
-        SearchQuery,
-        on_delete=models.CASCADE,
-        related_name="crawl_results",
-        verbose_name=_("Search Query")
+class CrawlSession(BaseModel):
+    """Track crawling sessions for a query."""
+    query = models.ForeignKey(
+        ProductQuery, 
+        on_delete=models.CASCADE, 
+        related_name='crawl_sessions'
     )
-    source = models.ForeignKey(
-        CrawlSource,
-        on_delete=models.PROTECT,
-        related_name="crawl_results",
-        verbose_name=_("Crawl Source")
+    urls_to_crawl = models.JSONField(
+        default=list,
+        help_text="Target URLs for crawling"
     )
-    crawled_url = models.URLField(
-        verbose_name=_("Crawled URL"),
-        help_text=_("Exact page that was crawled")
+    urls_crawled = models.JSONField(
+        default=list, 
+        help_text="Successfully crawled URLs"
+    )
+    urls_failed = models.JSONField(
+        default=list,
+        help_text="Failed URLs with error reasons"
+    )
+    raw_results = models.JSONField(
+        null=True, 
+        blank=True, 
+        help_text="Raw crawl data from Crawl4AI"
     )
     status = models.CharField(
-        max_length=32,
+        max_length=20,
         choices=[
-            ("success", _("Success")),
-            ("timeout", _("Timeout")),
-            ("blocked", _("Blocked")),
-            ("parse_error", _("Parse Error")),
-            ("rate_limited", _("Rate Limited")),
-            ("other_error", _("Other Error")),
+            ('pending', 'Pending'),
+            ('crawling', 'Crawling'),
+            ('completed', 'Completed'),
+            ('failed', 'Failed'),
         ],
-        default="success",
-        verbose_name=_("Status")
+        default='pending'
     )
-    response_time_ms = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        verbose_name=_("Response Time (ms)")
-    )
-    raw_content_length = models.PositiveIntegerField(
-        null=True,
-        blank=True,
-        verbose_name=_("Raw Content Length")
-    )
-    extracted_data = models.JSONField(
-        null=True,
-        blank=True,
-        verbose_name=_("Extracted Structured Data"),
-        help_text=_("LLM-parsed product/price/supplier info")
-    )
-    error_detail = models.TextField(
-        blank=True,
-        verbose_name=_("Error Detail")
-    )
-
+    error_message = models.TextField(null=True, blank=True)
+    started_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    
     class Meta:
-        verbose_name = _("Crawl Result")
-        verbose_name_plural = _("Crawl Results")
-        indexes = [
-            models.Index(fields=["search_query", "status"]),
-            models.Index(fields=["source", "created_at"]),
-        ]
-        ordering = ["-created_at"]
+        verbose_name = "Crawl Session"
+        verbose_name_plural = "Crawl Sessions"
 
-    def __str__(self) -> str:
-        return f"{self.source.name} crawl for {self.search_query_id} ({self.status})"
+    def __str__(self):
+        return f"Crawl for Query {self.query.id} - {self.status}"
 
 
-class ProductMatch(BaseModel):
-    """
-    Ranked product/supplier match extracted from crawl results.
-    Final output of agent reasoning & ranking.
-    """
-    search_query = models.ForeignKey(
-        SearchQuery,
-        on_delete=models.CASCADE,
-        related_name="product_matches",
-        verbose_name=_("Search Query")
+class Product(BaseModel):
+    """Extracted product from crawling."""
+    crawl_session = models.ForeignKey(
+        CrawlSession, 
+        on_delete=models.CASCADE, 
+        related_name='products'
     )
-    crawl_result = models.ForeignKey(
-        CrawlResult,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="product_matches",
-        verbose_name=_("Source Crawl Result")
-    )
-    name = models.CharField(
-        max_length=512,
-        verbose_name=_("Product Name")
-    )
+    name = models.CharField(max_length=500)
     price = models.DecimalField(
-        max_digits=14,
-        decimal_places=2,
-        null=True,
+        max_digits=10, 
+        decimal_places=2, 
+        null=True, 
         blank=True,
-        validators=[MinValueValidator(Decimal("0.01"))],
-        verbose_name=_("Price")
+        help_text="Product price in USD"
     )
     currency = models.CharField(
-        max_length=10,
-        default="USD",
-        verbose_name=_("Currency")
+        max_length=3,
+        default='USD',
+        help_text="Currency code (ISO 4217)"
     )
-    supplier_name = models.CharField(
-        max_length=255,
-        verbose_name=_("Supplier / Store Name")
+    url = models.URLField(max_length=1000)
+    source_domain = models.CharField(max_length=255)
+    image_url = models.URLField(max_length=1000, null=True, blank=True)
+    
+    # Extracted features
+    raw_data = models.JSONField(
+        default=dict,
+        help_text="All extracted data (specs, reviews, etc.)"
     )
-    product_url = models.URLField(
-        verbose_name=_("Product URL")
+    features = models.JSONField(
+        default=list,
+        help_text="List of product features"
     )
-    ranking_score = models.FloatField(
-        null=True,
+    
+    # LLM enrichment fields
+    llm_summary = models.TextField(
+        null=True, 
         blank=True,
-        verbose_name=_("Ranking Score"),
-        help_text=_("Final normalized score from agent ranking")
+        help_text="AI-generated summary"
     )
-    ranking_rationale = models.TextField(
-        blank=True,
-        verbose_name=_("Ranking Rationale"),
-        help_text=_("LLM-generated explanation of ranking position")
+    llm_score = models.FloatField(
+        null=True, 
+        blank=True, 
+        help_text="LLM ranking score (0-100)"
     )
-    confidence = models.FloatField(
-        default=0.0,
-        verbose_name=_("Confidence Score"),
-        help_text=_("LLM confidence in data accuracy")
+    llm_pros = models.JSONField(
+        default=list,
+        help_text="AI-identified pros"
     )
-    metadata = models.JSONField(
-        null=True,
-        blank=True,
-        verbose_name=_("Additional Metadata"),
-        help_text=_("Any extra extracted fields (specs, images, reviews)")
+    llm_cons = models.JSONField(
+        default=list,
+        help_text="AI-identified cons"
     )
-
+    
     class Meta:
-        verbose_name = _("Product Match")
-        verbose_name_plural = _("Product Matches")
-        indexes = [
-            models.Index(fields=["search_query", "ranking_score"]),
-            models.Index(fields=["supplier_name"]),
-        ]
-        ordering = ["-ranking_score", "-created_at"]
+        verbose_name = "Product"
+        verbose_name_plural = "Products"
+        ordering = ['-llm_score', '-created_at']
 
-    def __str__(self) -> str:
-        return f"{self.name} @ {self.price or 'N/A'} ({self.ranking_score or 'N/A'})"
+    def __str__(self):
+        return f"{self.name} - ${self.price}"
 
 
-class SupplierProfile(BaseModel):
-    """
-    Reusable supplier/vendor profile (can be linked to multiple matches).
-    """
-    name = models.CharField(
-        max_length=255,
-        unique=True,
-        verbose_name=_("Supplier Name")
+class ComparisonResult(BaseModel):
+    """Final ranked comparison for a query."""
+    query = models.OneToOneField(
+        ProductQuery, 
+        on_delete=models.CASCADE, 
+        related_name='result'
     )
-    website = models.URLField(
-        blank=True,
-        verbose_name=_("Website")
+    llm_reasoning = models.TextField(
+        help_text="Chain-of-thought explanation for rankings"
     )
-    country = models.CharField(
-        max_length=100,
-        blank=True,
-        verbose_name=_("Country")
-    )
-    reliability_score = models.FloatField(
+    llm_recommendation = models.TextField(
         null=True,
         blank=True,
-        verbose_name=_("Reliability Score"),
-        help_text=_("Historical/calculated supplier reliability")
+        help_text="AI recommendation summary"
     )
-    average_delivery_days = models.PositiveSmallIntegerField(
-        null=True,
-        blank=True,
-        verbose_name=_("Avg Delivery Days")
+    ranking_criteria = models.JSONField(
+        default=dict,
+        help_text="Criteria used for ranking (price, features, reviews, etc.)"
     )
-
+    
     class Meta:
-        verbose_name = _("Supplier Profile")
-        verbose_name_plural = _("Supplier Profiles")
-        ordering = ["name"]
+        verbose_name = "Comparison Result"
+        verbose_name_plural = "Comparison Results"
 
-    def __str__(self) -> str:
-        return self.name
+    def __str__(self):
+        return f"Comparison for: {self.query.query_text[:50]}"
+
+
+class ProductRanking(models.Model):
+    """Through table for ranked products in a comparison."""
+    comparison = models.ForeignKey(
+        ComparisonResult, 
+        on_delete=models.CASCADE,
+        related_name='rankings'
+    )
+    product = models.ForeignKey(
+        Product, 
+        on_delete=models.CASCADE
+    )
+    rank = models.PositiveIntegerField(
+        help_text="Position in ranking (1 = best)"
+    )
+    reasoning = models.TextField(
+        blank=True,
+        help_text="Specific reasoning for this product's rank"
+    )
+    score_breakdown = models.JSONField(
+        default=dict,
+        help_text="Detailed scoring (price_score, feature_score, etc.)"
+    )
+    
+    class Meta:
+        ordering = ['rank']
+        unique_together = [['comparison', 'rank']]
+        verbose_name = "Product Ranking"
+        verbose_name_plural = "Product Rankings"
+
+    def __str__(self):
+        return f"#{self.rank}: {self.product.name}"

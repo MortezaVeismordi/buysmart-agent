@@ -17,13 +17,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'src.core.apps.CoreConfig',
+    'src.domains.procurement.apps.ProcurementConfig',   
     # Third-party
     'rest_framework',
     'rest_framework_simplejwt',  # for jwt
     'corsheaders',                # for frontend
-    
-    # Your apps (بعداً اضافه می‌کنیم)
-    # 'domains.procurement.apps.ProcurementConfig',
 ]
 
 MIDDLEWARE = [
@@ -37,7 +35,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'config.urls'  # بعداً تغییر می‌دیم اگر نیاز شد
+ROOT_URLCONF = 'src.config.urls'
 
 TEMPLATES = [
     {
@@ -55,7 +53,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+WSGI_APPLICATION = 'src.config.wsgi.application'
 
 # Database (از env می‌خونه)
 DATABASES = {

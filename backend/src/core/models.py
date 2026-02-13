@@ -4,10 +4,8 @@ from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
-class SoftDeleteManager(models.Manager):
-    """Manager that excludes soft-deleted records by default."""
-    def get_queryset(self):
-        return super().get_queryset().filter(is_deleted=False)
+# Import custom managers
+from .managers import AdvancedManager, AllObjectsManager
 
 
 class BaseModel(models.Model):
@@ -46,8 +44,8 @@ class BaseModel(models.Model):
         verbose_name="Deleted At"
     )
 
-    objects = AdvancedManager()      # default: non-deleted only
-    all_objects = AllObjectsManager()      # access all records including deleted(NEW VERSION)
+    objects = AdvancedManager()      # default: active + non-deleted only
+    all_objects = AllObjectsManager()  # access all records including deleted
 
     class Meta:
         abstract = True

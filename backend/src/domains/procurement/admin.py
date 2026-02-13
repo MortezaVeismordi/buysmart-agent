@@ -1,41 +1,46 @@
 from django.contrib import admin
-from .models import (
-    SearchQuery,
-    CrawlSource,
-    CrawlResult,
-    ProductMatch,
-    SupplierProfile,
-)
+from .models import ProductQuery, CrawlSession, Product, ComparisonResult, ProductRanking
 
-@admin.register(SearchQuery)
-class SearchQueryAdmin(admin.ModelAdmin):
-    list_display = ("query_text", "status", "user", "created_at", "total_results")
-    list_filter = ("status", "created_at")
-    search_fields = ("query_text", "parsed_intent")
-    readonly_fields = ("created_at", "updated_at", "parsed_intent")
 
-@admin.register(CrawlSource)
-class CrawlSourceAdmin(admin.ModelAdmin):
-    list_display = ("name", "base_url", "is_active", "priority")
-    list_filter = ("is_active", "robots_txt_compliant")
-    search_fields = ("name", "base_url")
+@admin.register(ProductQuery)
+class ProductQueryAdmin(admin.ModelAdmin):
+    list_display = ['query_text_short', 'user', 'status', 'created_at']
+    list_filter = ['status', 'created_at']
+    search_fields = ['query_text', 'user__username', 'user__email']
+    readonly_fields = ['id', 'created_at', 'updated_at']
+    
+    def query_text_short(self, obj):
+        return obj.query_text[:60] + '...' if len(obj.query_text) > 60 else obj.query_text
+    query_text_short.short_description = 'Query'
 
-@admin.register(CrawlResult)
-class CrawlResultAdmin(admin.ModelAdmin):
-    list_display = ("source", "crawled_url", "status", "search_query", "created_at")
-    list_filter = ("status", "created_at")
-    search_fields = ("crawled_url", "error_detail")
-    readonly_fields = ("created_at", "updated_at", "extracted_data")
 
-@admin.register(ProductMatch)
-class ProductMatchAdmin(admin.ModelAdmin):
-    list_display = ("name", "supplier_name", "price", "currency", "ranking_score", "search_query")
-    list_filter = ("currency", "created_at")
-    search_fields = ("name", "supplier_name", "ranking_rationale")
-    readonly_fields = ("created_at", "updated_at", "metadata", "ranking_rationale")
+@admin.register(CrawlSession)
+class CrawlSessionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'query', 'status', 'started_at', 'completed_at']
+    list_filter = ['status', 'created_at']
+    readonly_fields = ['id', 'created_at', 'updated_at', 'started_at', 'completed_at']
 
-@admin.register(SupplierProfile)
-class SupplierProfileAdmin(admin.ModelAdmin):
-    list_display = ("name", "website", "country", "reliability_score")
-    list_filter = ("country",)
-    search_fields = ("name", "website")
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['name_short', 'price', 'source_domain', 'llm_score', 'created_at']
+    list_filter = ['source_domain', 'created_at']
+    search_fields = ['name', 'source_domain']
+    readonly_fields = ['id', 'created_at', 'updated_at']
+    
+    def name_short(self, obj):
+        return obj.name[:50] + '...' if len(obj.name) > 50 else obj.name
+    name_short.short_description = 'Product Name'
+
+
+@admin.register(ComparisonResult)
+class ComparisonResultAdmin(admin.ModelAdmin):
+    list_display = ['query', 'created_at']
+    readonly_fields = ['id', 'created_at', 'updated_at']
+
+
+@admin.register(ProductRanking)
+class ProductRankingAdmin(admin.ModelAdmin):
+    list_display = ['rank', 'product', 'comparison', 'score_breakdown']
+    list_filter = ['rank']
+    ordering = ['comparison', 'rank']

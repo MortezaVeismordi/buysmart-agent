@@ -1,0 +1,808 @@
+﻿Defaulting to user installation because normal site-packages is not writeable
+Collecting crawl4ai
+  Using cached crawl4ai-0.8.0-py3-none-any.whl.metadata (53 kB)
+Collecting aiofiles>=24.1.0 (from crawl4ai)
+  Using cached aiofiles-25.1.0-py3-none-any.whl.metadata (6.3 kB)
+Requirement already satisfied: aiohttp>=3.11.11 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from crawl4ai) (3.13.2)
+Collecting aiosqlite~=0.20 (from crawl4ai)
+  Using cached aiosqlite-0.22.1-py3-none-any.whl.metadata (4.3 kB)
+Requirement already satisfied: anyio>=4.0.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from crawl4ai) (4.12.0)
+Collecting lxml~=5.3 (from crawl4ai)
+  Using cached lxml-5.4.0.tar.gz (3.7 MB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'done'
+  Preparing metadata (pyproject.toml): started
+  Preparing metadata (pyproject.toml): finished with status 'done'
+Collecting litellm>=1.53.1 (from crawl4ai)
+  Using cached litellm-1.81.11-py3-none-any.whl.metadata (30 kB)
+Collecting numpy<3,>=1.26.0 (from crawl4ai)
+  Using cached numpy-2.4.2-cp314-cp314-win_amd64.whl.metadata (6.6 kB)
+Requirement already satisfied: pillow>=10.4 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from crawl4ai) (12.0.0)
+Collecting playwright>=1.49.0 (from crawl4ai)
+  Downloading playwright-1.58.0-py3-none-win_amd64.whl.metadata (3.5 kB)
+Collecting patchright>=1.49.0 (from crawl4ai)
+  Downloading patchright-1.58.0-py3-none-win_amd64.whl.metadata (13 kB)
+Collecting python-dotenv~=1.0 (from crawl4ai)
+  Using cached python_dotenv-1.2.1-py3-none-any.whl.metadata (25 kB)
+Requirement already satisfied: requests~=2.26 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from crawl4ai) (2.32.5)
+Collecting beautifulsoup4~=4.12 (from crawl4ai)
+  Using cached beautifulsoup4-4.14.3-py3-none-any.whl.metadata (3.8 kB)
+Collecting tf-playwright-stealth>=1.1.0 (from crawl4ai)
+  Using cached tf_playwright_stealth-1.2.0-py3-none-any.whl.metadata (2.5 kB)
+Collecting xxhash~=3.4 (from crawl4ai)
+  Using cached xxhash-3.6.0-cp314-cp314-win_amd64.whl.metadata (13 kB)
+Collecting rank-bm25~=0.2 (from crawl4ai)
+  Using cached rank_bm25-0.2.2-py3-none-any.whl.metadata (3.2 kB)
+Collecting snowballstemmer~=2.2 (from crawl4ai)
+  Using cached snowballstemmer-2.2.0-py2.py3-none-any.whl.metadata (6.5 kB)
+Requirement already satisfied: pydantic>=2.10 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from crawl4ai) (2.12.5)
+Collecting pyOpenSSL>=25.3.0 (from crawl4ai)
+  Using cached pyopenssl-25.3.0-py3-none-any.whl.metadata (17 kB)
+Collecting psutil>=6.1.1 (from crawl4ai)
+  Downloading psutil-7.2.2-cp37-abi3-win_amd64.whl.metadata (22 kB)
+Requirement already satisfied: PyYAML>=6.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from crawl4ai) (6.0.3)
+Collecting nltk>=3.9.1 (from crawl4ai)
+  Downloading nltk-3.9.2-py3-none-any.whl.metadata (3.2 kB)
+Collecting rich>=13.9.4 (from crawl4ai)
+  Using cached rich-14.3.2-py3-none-any.whl.metadata (18 kB)
+Collecting cssselect>=1.2.0 (from crawl4ai)
+  Downloading cssselect-1.4.0-py3-none-any.whl.metadata (2.4 kB)
+Requirement already satisfied: httpx>=0.27.2 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from crawl4ai) (0.28.1)
+Collecting fake-useragent>=2.0.3 (from crawl4ai)
+  Downloading fake_useragent-2.2.0-py3-none-any.whl.metadata (17 kB)
+Collecting click>=8.1.7 (from crawl4ai)
+  Using cached click-8.3.1-py3-none-any.whl.metadata (2.6 kB)
+Collecting chardet>=5.2.0 (from crawl4ai)
+  Downloading chardet-5.2.0-py3-none-any.whl.metadata (3.4 kB)
+Collecting brotli>=1.1.0 (from crawl4ai)
+  Downloading brotli-1.2.0-cp314-cp314-win_amd64.whl.metadata (6.3 kB)
+Collecting humanize>=4.10.0 (from crawl4ai)
+  Downloading humanize-4.15.0-py3-none-any.whl.metadata (7.8 kB)
+Collecting lark>=1.2.2 (from crawl4ai)
+  Downloading lark-1.3.1-py3-none-any.whl.metadata (1.8 kB)
+Collecting alphashape>=1.3.1 (from crawl4ai)
+  Downloading alphashape-1.3.1-py2.py3-none-any.whl.metadata (18 kB)
+Collecting shapely>=2.0.0 (from crawl4ai)
+  Downloading shapely-2.1.2-cp314-cp314-win_amd64.whl.metadata (7.1 kB)
+Collecting soupsieve>=1.6.1 (from beautifulsoup4~=4.12->crawl4ai)
+  Using cached soupsieve-2.8.3-py3-none-any.whl.metadata (4.6 kB)
+Requirement already satisfied: typing-extensions>=4.0.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from beautifulsoup4~=4.12->crawl4ai) (4.15.0)
+Requirement already satisfied: charset_normalizer<4,>=2 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from requests~=2.26->crawl4ai) (3.4.4)
+Requirement already satisfied: idna<4,>=2.5 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from requests~=2.26->crawl4ai) (3.11)
+Requirement already satisfied: urllib3<3,>=1.21.1 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from requests~=2.26->crawl4ai) (2.6.1)
+Requirement already satisfied: certifi>=2017.4.17 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from requests~=2.26->crawl4ai) (2025.11.12)
+Requirement already satisfied: aiohappyeyeballs>=2.5.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from aiohttp>=3.11.11->crawl4ai) (2.6.1)
+Requirement already satisfied: aiosignal>=1.4.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from aiohttp>=3.11.11->crawl4ai) (1.4.0)
+Requirement already satisfied: attrs>=17.3.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from aiohttp>=3.11.11->crawl4ai) (25.4.0)
+Requirement already satisfied: frozenlist>=1.1.1 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from aiohttp>=3.11.11->crawl4ai) (1.8.0)
+Requirement already satisfied: multidict<7.0,>=4.5 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from aiohttp>=3.11.11->crawl4ai) (6.7.0)
+Requirement already satisfied: propcache>=0.2.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from aiohttp>=3.11.11->crawl4ai) (0.4.1)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from aiohttp>=3.11.11->crawl4ai) (1.22.0)
+Collecting click-log>=0.3.2 (from alphashape>=1.3.1->crawl4ai)
+  Downloading click_log-0.4.0-py2.py3-none-any.whl.metadata (1.2 kB)
+Collecting trimesh>=3.9.8 (from alphashape>=1.3.1->crawl4ai)
+  Downloading trimesh-4.11.2-py3-none-any.whl.metadata (13 kB)
+Collecting networkx>=2.5 (from alphashape>=1.3.1->crawl4ai)
+  Downloading networkx-3.6.1-py3-none-any.whl.metadata (6.8 kB)
+Collecting rtree>=0.9.7 (from alphashape>=1.3.1->crawl4ai)
+  Downloading rtree-1.4.1-py3-none-win_amd64.whl.metadata (2.2 kB)
+Collecting scipy>=1.0.0 (from alphashape>=1.3.1->crawl4ai)
+  Downloading scipy-1.17.0-cp314-cp314-win_amd64.whl.metadata (60 kB)
+Requirement already satisfied: colorama in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from click>=8.1.7->crawl4ai) (0.4.6)
+Requirement already satisfied: httpcore==1.* in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from httpx>=0.27.2->crawl4ai) (1.0.9)
+Requirement already satisfied: h11>=0.16 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from httpcore==1.*->httpx>=0.27.2->crawl4ai) (0.16.0)
+Requirement already satisfied: h2<5,>=3 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from httpx[http2]>=0.27.2->crawl4ai) (4.3.0)
+Requirement already satisfied: hyperframe<7,>=6.1 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from h2<5,>=3->httpx[http2]>=0.27.2->crawl4ai) (6.1.0)
+Requirement already satisfied: hpack<5,>=4.1 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from h2<5,>=3->httpx[http2]>=0.27.2->crawl4ai) (4.1.0)
+Collecting fastuuid>=0.13.0 (from litellm>=1.53.1->crawl4ai)
+  Using cached fastuuid-0.14.0-cp314-cp314-win_amd64.whl.metadata (1.1 kB)
+Collecting importlib-metadata>=6.8.0 (from litellm>=1.53.1->crawl4ai)
+  Using cached importlib_metadata-8.7.1-py3-none-any.whl.metadata (4.7 kB)
+Collecting jinja2<4.0.0,>=3.1.2 (from litellm>=1.53.1->crawl4ai)
+  Using cached jinja2-3.1.6-py3-none-any.whl.metadata (2.9 kB)
+Requirement already satisfied: jsonschema<5.0.0,>=4.23.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from litellm>=1.53.1->crawl4ai) (4.26.0)
+Collecting openai>=2.8.0 (from litellm>=1.53.1->crawl4ai)
+  Using cached openai-2.20.0-py3-none-any.whl.metadata (29 kB)
+Collecting tiktoken>=0.7.0 (from litellm>=1.53.1->crawl4ai)
+  Using cached tiktoken-0.12.0-cp314-cp314-win_amd64.whl.metadata (6.9 kB)
+Collecting tokenizers (from litellm>=1.53.1->crawl4ai)
+  Using cached tokenizers-0.22.2-cp39-abi3-win_amd64.whl.metadata (7.4 kB)
+Collecting MarkupSafe>=2.0 (from jinja2<4.0.0,>=3.1.2->litellm>=1.53.1->crawl4ai)
+  Using cached markupsafe-3.0.3-cp314-cp314-win_amd64.whl.metadata (2.8 kB)
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from jsonschema<5.0.0,>=4.23.0->litellm>=1.53.1->crawl4ai) (2025.9.1)
+Requirement already satisfied: referencing>=0.28.4 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from jsonschema<5.0.0,>=4.23.0->litellm>=1.53.1->crawl4ai) (0.37.0)
+Requirement already satisfied: rpds-py>=0.25.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from jsonschema<5.0.0,>=4.23.0->litellm>=1.53.1->crawl4ai) (0.30.0)
+Requirement already satisfied: annotated-types>=0.6.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from pydantic>=2.10->crawl4ai) (0.7.0)
+Requirement already satisfied: pydantic-core==2.41.5 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from pydantic>=2.10->crawl4ai) (2.41.5)
+Requirement already satisfied: typing-inspection>=0.4.2 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from pydantic>=2.10->crawl4ai) (0.4.2)
+Collecting zipp>=3.20 (from importlib-metadata>=6.8.0->litellm>=1.53.1->crawl4ai)
+  Using cached zipp-3.23.0-py3-none-any.whl.metadata (3.6 kB)
+Collecting joblib (from nltk>=3.9.1->crawl4ai)
+  Downloading joblib-1.5.3-py3-none-any.whl.metadata (5.5 kB)
+Collecting regex>=2021.8.3 (from nltk>=3.9.1->crawl4ai)
+  Using cached regex-2026.1.15-cp314-cp314-win_amd64.whl.metadata (41 kB)
+Collecting tqdm (from nltk>=3.9.1->crawl4ai)
+  Using cached tqdm-4.67.3-py3-none-any.whl.metadata (57 kB)
+Collecting distro<2,>=1.7.0 (from openai>=2.8.0->litellm>=1.53.1->crawl4ai)
+  Using cached distro-1.9.0-py3-none-any.whl.metadata (6.8 kB)
+Collecting jiter<1,>=0.10.0 (from openai>=2.8.0->litellm>=1.53.1->crawl4ai)
+  Using cached jiter-0.13.0-cp314-cp314-win_amd64.whl.metadata (5.3 kB)
+Collecting sniffio (from openai>=2.8.0->litellm>=1.53.1->crawl4ai)
+  Using cached sniffio-1.3.1-py3-none-any.whl.metadata (3.9 kB)
+Collecting pyee<14,>=13 (from patchright>=1.49.0->crawl4ai)
+  Using cached pyee-13.0.0-py3-none-any.whl.metadata (2.9 kB)
+Collecting greenlet<4.0.0,>=3.1.1 (from patchright>=1.49.0->crawl4ai)
+  Downloading greenlet-3.3.1-cp314-cp314-win_amd64.whl.metadata (3.8 kB)
+Requirement already satisfied: cryptography<47,>=45.0.7 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from pyOpenSSL>=25.3.0->crawl4ai) (46.0.3)
+Requirement already satisfied: cffi>=2.0.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from cryptography<47,>=45.0.7->pyOpenSSL>=25.3.0->crawl4ai) (2.0.0)
+Requirement already satisfied: pycparser in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from cffi>=2.0.0->cryptography<47,>=45.0.7->pyOpenSSL>=25.3.0->crawl4ai) (2.23)
+Collecting markdown-it-py>=2.2.0 (from rich>=13.9.4->crawl4ai)
+  Using cached markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+Requirement already satisfied: pygments<3.0.0,>=2.13.0 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from rich>=13.9.4->crawl4ai) (2.19.2)
+Collecting mdurl~=0.1 (from markdown-it-py>=2.2.0->rich>=13.9.4->crawl4ai)
+  Using cached mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Collecting fake-http-header<0.4.0,>=0.3.5 (from tf-playwright-stealth>=1.1.0->crawl4ai)
+  Using cached fake_http_header-0.3.5-py3-none-any.whl.metadata (3.5 kB)
+Collecting huggingface-hub<2.0,>=0.16.4 (from tokenizers->litellm>=1.53.1->crawl4ai)
+  Using cached huggingface_hub-1.4.1-py3-none-any.whl.metadata (13 kB)
+Requirement already satisfied: filelock in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.53.1->crawl4ai) (3.21.0)
+Collecting fsspec>=2023.5.0 (from huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.53.1->crawl4ai)
+  Using cached fsspec-2026.2.0-py3-none-any.whl.metadata (10 kB)
+Collecting hf-xet<2.0.0,>=1.2.0 (from huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.53.1->crawl4ai)
+  Using cached hf_xet-1.2.0-cp37-abi3-win_amd64.whl.metadata (5.0 kB)
+Requirement already satisfied: packaging>=20.9 in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.53.1->crawl4ai) (25.0)
+Requirement already satisfied: shellingham in C:\Users\Day Computer\AppData\Roaming\Python\Python314\site-packages (from huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.53.1->crawl4ai) (1.5.4)
+Collecting typer-slim (from huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.53.1->crawl4ai)
+  Using cached typer_slim-0.23.1-py3-none-any.whl.metadata (4.2 kB)
+Collecting typer>=0.23.1 (from typer-slim->huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.53.1->crawl4ai)
+  Using cached typer-0.23.1-py3-none-any.whl.metadata (16 kB)
+Collecting annotated-doc>=0.0.2 (from typer>=0.23.1->typer-slim->huggingface-hub<2.0,>=0.16.4->tokenizers->litellm>=1.53.1->crawl4ai)
+  Using cached annotated_doc-0.0.4-py3-none-any.whl.metadata (6.6 kB)
+Downloading crawl4ai-0.8.0-py3-none-any.whl (453 kB)
+Downloading aiosqlite-0.22.1-py3-none-any.whl (17 kB)
+Using cached beautifulsoup4-4.14.3-py3-none-any.whl (107 kB)
+Downloading numpy-2.4.2-cp314-cp314-win_amd64.whl (12.4 MB)
+   ---------------------------------------- 12.4/12.4 MB 1.6 MB/s  0:00:08
+Using cached python_dotenv-1.2.1-py3-none-any.whl (21 kB)
+Downloading rank_bm25-0.2.2-py3-none-any.whl (8.6 kB)
+Downloading snowballstemmer-2.2.0-py2.py3-none-any.whl (93 kB)
+Downloading xxhash-3.6.0-cp314-cp314-win_amd64.whl (32 kB)
+Downloading aiofiles-25.1.0-py3-none-any.whl (14 kB)
+Downloading alphashape-1.3.1-py2.py3-none-any.whl (13 kB)
+Downloading brotli-1.2.0-cp314-cp314-win_amd64.whl (375 kB)
+Downloading chardet-5.2.0-py3-none-any.whl (199 kB)
+Using cached click-8.3.1-py3-none-any.whl (108 kB)
+Downloading click_log-0.4.0-py2.py3-none-any.whl (4.3 kB)
+Downloading cssselect-1.4.0-py3-none-any.whl (18 kB)
+Downloading fake_useragent-2.2.0-py3-none-any.whl (161 kB)
+Downloading humanize-4.15.0-py3-none-any.whl (132 kB)
+Downloading lark-1.3.1-py3-none-any.whl (113 kB)
+Downloading litellm-1.81.11-py3-none-any.whl (14.5 MB)
+   ---------------------------------------- 14.5/14.5 MB 2.0 MB/s  0:00:07
+Using cached jinja2-3.1.6-py3-none-any.whl (134 kB)
+Downloading fastuuid-0.14.0-cp314-cp314-win_amd64.whl (156 kB)
+Downloading importlib_metadata-8.7.1-py3-none-any.whl (27 kB)
+Downloading markupsafe-3.0.3-cp314-cp314-win_amd64.whl (15 kB)
+Downloading networkx-3.6.1-py3-none-any.whl (2.1 MB)
+   ---------------------------------------- 2.1/2.1 MB 2.1 MB/s  0:00:01
+Downloading nltk-3.9.2-py3-none-any.whl (1.5 MB)
+   ---------------------------------------- 1.5/1.5 MB 1.9 MB/s  0:00:01
+Downloading openai-2.20.0-py3-none-any.whl (1.1 MB)
+   ---------------------------------------- 1.1/1.1 MB 2.0 MB/s  0:00:01
+Using cached distro-1.9.0-py3-none-any.whl (20 kB)
+Downloading jiter-0.13.0-cp314-cp314-win_amd64.whl (204 kB)
+Downloading patchright-1.58.0-py3-none-win_amd64.whl (36.8 MB)
+   ---------------------------------------- 36.8/36.8 MB 2.9 MB/s  0:00:13
+Downloading greenlet-3.3.1-cp314-cp314-win_amd64.whl (228 kB)
+Using cached pyee-13.0.0-py3-none-any.whl (15 kB)
+Downloading playwright-1.58.0-py3-none-win_amd64.whl (36.8 MB)
+   ---------------------------------------- 36.8/36.8 MB 4.3 MB/s  0:00:08
+Downloading psutil-7.2.2-cp37-abi3-win_amd64.whl (137 kB)
+Using cached pyopenssl-25.3.0-py3-none-any.whl (57 kB)
+Downloading regex-2026.1.15-cp314-cp314-win_amd64.whl (280 kB)
+Downloading rich-14.3.2-py3-none-any.whl (309 kB)
+Using cached markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
+Using cached mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Downloading rtree-1.4.1-py3-none-win_amd64.whl (389 kB)
+Downloading scipy-1.17.0-cp314-cp314-win_amd64.whl (37.1 MB)
+   ---------------------------------------- 37.1/37.1 MB 4.0 MB/s  0:00:10
+Downloading shapely-2.1.2-cp314-cp314-win_amd64.whl (1.8 MB)
+   ---------------------------------------- 1.8/1.8 MB 3.1 MB/s  0:00:01
+Downloading soupsieve-2.8.3-py3-none-any.whl (37 kB)
+Downloading tf_playwright_stealth-1.2.0-py3-none-any.whl (33 kB)
+Downloading fake_http_header-0.3.5-py3-none-any.whl (14 kB)
+Downloading tiktoken-0.12.0-cp314-cp314-win_amd64.whl (921 kB)
+   ---------------------------------------- 921.1/921.1 kB 677.9 kB/s  0:00:02
+Using cached tqdm-4.67.3-py3-none-any.whl (78 kB)
+Downloading trimesh-4.11.2-py3-none-any.whl (740 kB)
+   ---------------------------------------- 740.3/740.3 kB 723.0 kB/s  0:00:01
+Using cached zipp-3.23.0-py3-none-any.whl (10 kB)
+Downloading joblib-1.5.3-py3-none-any.whl (309 kB)
+Using cached sniffio-1.3.1-py3-none-any.whl (10 kB)
+Downloading tokenizers-0.22.2-cp39-abi3-win_amd64.whl (2.7 MB)
+   ---------------------------------------- 2.7/2.7 MB 2.7 MB/s  0:00:01
+Downloading huggingface_hub-1.4.1-py3-none-any.whl (553 kB)
+   ---------------------------------------- 553.3/553.3 kB 209.0 kB/s  0:00:01
+Using cached hf_xet-1.2.0-cp37-abi3-win_amd64.whl (2.9 MB)
+Downloading fsspec-2026.2.0-py3-none-any.whl (202 kB)
+Downloading typer_slim-0.23.1-py3-none-any.whl (3.4 kB)
+Downloading typer-0.23.1-py3-none-any.whl (56 kB)
+Downloading annotated_doc-0.0.4-py3-none-any.whl (5.3 kB)
+Building wheels for collected packages: lxml
+  Building wheel for lxml (pyproject.toml): started
+  Building wheel for lxml (pyproject.toml): finished with status 'error'
+pip :   error: 
+subprocess-exited-with-error
+At line:1 char:1
++ pip install crawl4ai 2>&1 
+| Out-File -FilePath 
+"C:\Users\Day Computer ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: (  err  
+  or: subprocess-exited-w   
+ ith-error:String) [], R    
+emoteException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+  
+  Building wheel for lxml 
+(pyproject.toml) did not 
+run successfully.
+  exit code: 1
+  
+  [126 lines of output]
+  C:\Users\Day Computer\AppD
+ata\Local\Temp\pip-build-env
+-dslc86w3\overlay\Lib\site-p
+ackages\setuptools\dist.py:7
+65: SetuptoolsDeprecationWar
+ning: License classifiers 
+are deprecated.
+  !!
+  
+          ******************
+****************************
+****************************
+******
+          Please consider 
+removing the following 
+classifiers in favor of a 
+SPDX license expression:
+  
+          License :: OSI 
+Approved :: BSD License
+  
+          See https://packag
+ing.python.org/en/latest/gui
+des/writing-pyproject-toml/#
+license for details.
+          ******************
+****************************
+****************************
+******
+  
+  !!
+    self._finalize_license_e
+xpression()
+  Building lxml version 
+5.4.0.
+  Building without Cython.
+  Building against 
+pre-built libxml2 andl 
+libxslt libraries
+  running bdist_wheel
+  running build
+  running build_py
+  creating build\lib.win-amd
+64-cpython-314\lxml
+  copying 
+src\lxml\builder.py -> build
+\lib.win-amd64-cpython-314\l
+xml
+  copying 
+src\lxml\cssselect.py -> bui
+ld\lib.win-amd64-cpython-314
+\lxml
+  copying 
+src\lxml\doctestcompare.py 
+-> build\lib.win-amd64-cpyth
+on-314\lxml
+  copying 
+src\lxml\ElementInclude.py 
+-> build\lib.win-amd64-cpyth
+on-314\lxml
+  copying 
+src\lxml\pyclasslookup.py 
+-> build\lib.win-amd64-cpyth
+on-314\lxml
+  copying src\lxml\sax.py 
+-> build\lib.win-amd64-cpyth
+on-314\lxml
+  copying 
+src\lxml\usedoctest.py -> bu
+ild\lib.win-amd64-cpython-31
+4\lxml
+  copying 
+src\lxml\_elementpath.py -> 
+build\lib.win-amd64-cpython-
+314\lxml
+  copying 
+src\lxml\__init__.py -> buil
+d\lib.win-amd64-cpython-314\
+lxml
+  creating build\lib.win-amd
+64-cpython-314\lxml\includes
+  copying src\lxml\includes\
+__init__.py -> build\lib.win
+-amd64-cpython-314\lxml\incl
+udes
+  creating build\lib.win-amd
+64-cpython-314\lxml\html
+  copying 
+src\lxml\html\builder.py -> 
+build\lib.win-amd64-cpython-
+314\lxml\html
+  copying 
+src\lxml\html\clean.py -> bu
+ild\lib.win-amd64-cpython-31
+4\lxml\html
+  copying 
+src\lxml\html\defs.py -> bui
+ld\lib.win-amd64-cpython-314
+\lxml\html
+  copying 
+src\lxml\html\diff.py -> bui
+ld\lib.win-amd64-cpython-314
+\lxml\html
+  copying src\lxml\html\Elem
+entSoup.py -> build\lib.win-
+amd64-cpython-314\lxml\html
+  copying 
+src\lxml\html\formfill.py 
+-> build\lib.win-amd64-cpyth
+on-314\lxml\html
+  copying src\lxml\html\html
+5parser.py -> build\lib.win-
+amd64-cpython-314\lxml\html
+  copying 
+src\lxml\html\soupparser.py 
+-> build\lib.win-amd64-cpyth
+on-314\lxml\html
+  copying 
+src\lxml\html\usedoctest.py 
+-> build\lib.win-amd64-cpyth
+on-314\lxml\html
+  copying src\lxml\html\_dif
+fcommand.py -> build\lib.win
+-amd64-cpython-314\lxml\html
+  copying src\lxml\html\_htm
+l5builder.py -> build\lib.wi
+n-amd64-cpython-314\lxml\htm
+l
+  copying 
+src\lxml\html\_setmixin.py 
+-> build\lib.win-amd64-cpyth
+on-314\lxml\html
+  copying 
+src\lxml\html\__init__.py 
+-> build\lib.win-amd64-cpyth
+on-314\lxml\html
+  creating build\lib.win-amd
+64-cpython-314\lxml\isoschem
+atron
+  copying src\lxml\isoschema
+tron\__init__.py -> build\li
+b.win-amd64-cpython-314\lxml
+\isoschematron
+  copying src\lxml\etree.h 
+-> build\lib.win-amd64-cpyth
+on-314\lxml
+  copying 
+src\lxml\etree_api.h -> buil
+d\lib.win-amd64-cpython-314\
+lxml
+  copying 
+src\lxml\lxml.etree.h -> bui
+ld\lib.win-amd64-cpython-314
+\lxml
+  copying 
+src\lxml\lxml.etree_api.h 
+-> build\lib.win-amd64-cpyth
+on-314\lxml
+  copying 
+src\lxml\etree.pyx -> build\
+lib.win-amd64-cpython-314\lx
+ml
+  copying 
+src\lxml\objectify.pyx -> bu
+ild\lib.win-amd64-cpython-31
+4\lxml
+  copying 
+src\lxml\apihelpers.pxi -> b
+uild\lib.win-amd64-cpython-3
+14\lxml
+  copying 
+src\lxml\classlookup.pxi -> 
+build\lib.win-amd64-cpython-
+314\lxml
+  copying 
+src\lxml\cleanup.pxi -> buil
+d\lib.win-amd64-cpython-314\
+lxml
+  copying 
+src\lxml\debug.pxi -> build\
+lib.win-amd64-cpython-314\lx
+ml
+  copying 
+src\lxml\docloader.pxi -> bu
+ild\lib.win-amd64-cpython-31
+4\lxml
+  copying src\lxml\dtd.pxi 
+-> build\lib.win-amd64-cpyth
+on-314\lxml
+  copying 
+src\lxml\extensions.pxi -> b
+uild\lib.win-amd64-cpython-3
+14\lxml
+  copying 
+src\lxml\iterparse.pxi -> bu
+ild\lib.win-amd64-cpython-31
+4\lxml
+  copying 
+src\lxml\nsclasses.pxi -> bu
+ild\lib.win-amd64-cpython-31
+4\lxml
+  copying 
+src\lxml\objectpath.pxi -> b
+uild\lib.win-amd64-cpython-3
+14\lxml
+  copying 
+src\lxml\parser.pxi -> build
+\lib.win-amd64-cpython-314\l
+xml
+  copying 
+src\lxml\parsertarget.pxi 
+-> build\lib.win-amd64-cpyth
+on-314\lxml
+  copying 
+src\lxml\proxy.pxi -> build\
+lib.win-amd64-cpython-314\lx
+ml
+  copying 
+src\lxml\public-api.pxi -> b
+uild\lib.win-amd64-cpython-3
+14\lxml
+  copying 
+src\lxml\readonlytree.pxi 
+-> build\lib.win-amd64-cpyth
+on-314\lxml
+  copying 
+src\lxml\relaxng.pxi -> buil
+d\lib.win-amd64-cpython-314\
+lxml
+  copying 
+src\lxml\saxparser.pxi -> bu
+ild\lib.win-amd64-cpython-31
+4\lxml
+  copying 
+src\lxml\schematron.pxi -> b
+uild\lib.win-amd64-cpython-3
+14\lxml
+  copying 
+src\lxml\serializer.pxi -> b
+uild\lib.win-amd64-cpython-3
+14\lxml
+  copying 
+src\lxml\xinclude.pxi -> bui
+ld\lib.win-amd64-cpython-314
+\lxml
+  copying 
+src\lxml\xmlerror.pxi -> bui
+ld\lib.win-amd64-cpython-314
+\lxml
+  copying 
+src\lxml\xmlid.pxi -> build\
+lib.win-amd64-cpython-314\lx
+ml
+  copying 
+src\lxml\xmlschema.pxi -> bu
+ild\lib.win-amd64-cpython-31
+4\lxml
+  copying 
+src\lxml\xpath.pxi -> build\
+lib.win-amd64-cpython-314\lx
+ml
+  copying src\lxml\xslt.pxi 
+-> build\lib.win-amd64-cpyth
+on-314\lxml
+  copying 
+src\lxml\xsltext.pxi -> buil
+d\lib.win-amd64-cpython-314\
+lxml
+  copying 
+src\lxml\includes\c14n.pxd 
+-> build\lib.win-amd64-cpyth
+on-314\lxml\includes
+  copying src\lxml\includes\
+config.pxd -> build\lib.win-
+amd64-cpython-314\lxml\inclu
+des
+  copying src\lxml\includes\
+dtdvalid.pxd -> build\lib.wi
+n-amd64-cpython-314\lxml\inc
+ludes
+  copying src\lxml\includes\
+etreepublic.pxd -> build\lib
+.win-amd64-cpython-314\lxml\
+includes
+  copying src\lxml\includes\
+htmlparser.pxd -> build\lib.
+win-amd64-cpython-314\lxml\i
+ncludes
+  copying src\lxml\includes\
+relaxng.pxd -> build\lib.win
+-amd64-cpython-314\lxml\incl
+udes
+  copying src\lxml\includes\
+schematron.pxd -> build\lib.
+win-amd64-cpython-314\lxml\i
+ncludes
+  copying 
+src\lxml\includes\tree.pxd 
+-> build\lib.win-amd64-cpyth
+on-314\lxml\includes
+  copying 
+src\lxml\includes\uri.pxd 
+-> build\lib.win-amd64-cpyth
+on-314\lxml\includes
+  copying src\lxml\includes\
+xinclude.pxd -> build\lib.wi
+n-amd64-cpython-314\lxml\inc
+ludes
+  copying src\lxml\includes\
+xmlerror.pxd -> build\lib.wi
+n-amd64-cpython-314\lxml\inc
+ludes
+  copying src\lxml\includes\
+xmlparser.pxd -> build\lib.w
+in-amd64-cpython-314\lxml\in
+cludes
+  copying src\lxml\includes\
+xmlschema.pxd -> build\lib.w
+in-amd64-cpython-314\lxml\in
+cludes
+  copying 
+src\lxml\includes\xpath.pxd 
+-> build\lib.win-amd64-cpyth
+on-314\lxml\includes
+  copying 
+src\lxml\includes\xslt.pxd 
+-> build\lib.win-amd64-cpyth
+on-314\lxml\includes
+  copying src\lxml\includes\
+__init__.pxd -> build\lib.wi
+n-amd64-cpython-314\lxml\inc
+ludes
+  copying src\lxml\includes\
+etree_defs.h -> build\lib.wi
+n-amd64-cpython-314\lxml\inc
+ludes
+  copying src\lxml\includes\
+lxml-version.h -> build\lib.
+win-amd64-cpython-314\lxml\i
+ncludes
+  creating build\lib.win-amd
+64-cpython-314\lxml\isoschem
+atron\resources\rng
+  copying src\lxml\isoschema
+tron\resources\rng\iso-schem
+atron.rng -> build\lib.win-a
+md64-cpython-314\lxml\isosch
+ematron\resources\rng
+  creating build\lib.win-amd
+64-cpython-314\lxml\isoschem
+atron\resources\xsl
+  copying src\lxml\isoschema
+tron\resources\xsl\RNG2Schtr
+n.xsl -> build\lib.win-amd64
+-cpython-314\lxml\isoschemat
+ron\resources\xsl
+  copying src\lxml\isoschema
+tron\resources\xsl\XSD2Schtr
+n.xsl -> build\lib.win-amd64
+-cpython-314\lxml\isoschemat
+ron\resources\xsl
+  creating build\lib.win-amd
+64-cpython-314\lxml\isoschem
+atron\resources\xsl\iso-sche
+matron-xslt1
+  copying src\lxml\isoschema
+tron\resources\xsl\iso-schem
+atron-xslt1\iso_abstract_exp
+and.xsl -> build\lib.win-amd
+64-cpython-314\lxml\isoschem
+atron\resources\xsl\iso-sche
+matron-xslt1
+  copying src\lxml\isoschema
+tron\resources\xsl\iso-schem
+atron-xslt1\iso_dsdl_include
+.xsl -> build\lib.win-amd64-
+cpython-314\lxml\isoschematr
+on\resources\xsl\iso-schemat
+ron-xslt1
+  copying src\lxml\isoschema
+tron\resources\xsl\iso-schem
+atron-xslt1\iso_schematron_m
+essage.xsl -> build\lib.win-
+amd64-cpython-314\lxml\isosc
+hematron\resources\xsl\iso-s
+chematron-xslt1
+  copying src\lxml\isoschema
+tron\resources\xsl\iso-schem
+atron-xslt1\iso_schematron_s
+keleton_for_xslt1.xsl -> bui
+ld\lib.win-amd64-cpython-314
+\lxml\isoschematron\resource
+s\xsl\iso-schematron-xslt1
+  copying src\lxml\isoschema
+tron\resources\xsl\iso-schem
+atron-xslt1\iso_svrl_for_xsl
+t1.xsl -> build\lib.win-amd6
+4-cpython-314\lxml\isoschema
+tron\resources\xsl\iso-schem
+atron-xslt1
+  copying src\lxml\isoschema
+tron\resources\xsl\iso-schem
+atron-xslt1\readme.txt -> bu
+ild\lib.win-amd64-cpython-31
+4\lxml\isoschematron\resourc
+es\xsl\iso-schematron-xslt1
+  running build_ext
+  building 'lxml.etree' 
+extension
+Failed to build lxml
+  creating build\temp.win-am
+d64-cpython-314\Release\src\
+lxml
+  "C:\Program Files 
+(x86)\Microsoft Visual Studi
+o\2022\BuildTools\VC\Tools\M
+SVC\14.44.35207\bin\HostX86\
+x64\cl.exe" /c /nologo /O2 
+/W3 /GL /DNDEBUG /MD -DCYTHO
+N_CLINE_IN_TRACEBACK=0 
+-Isrc -Isrc\lxml\includes 
+-IC:\Python314\include 
+-IC:\Python314\Include 
+"-IC:\Program Files 
+(x86)\Microsoft Visual Studi
+o\2022\BuildTools\VC\Tools\M
+SVC\14.44.35207\include" 
+"-IC:\Program Files 
+(x86)\Microsoft Visual Studi
+o\2022\BuildTools\VC\Auxilia
+ry\VS\include" 
+"-IC:\Program Files 
+(x86)\Windows Kits\10\includ
+e\10.0.22621.0\ucrt" 
+"-IC:\Program Files 
+(x86)\Windows Kits\10\\inclu
+de\10.0.22621.0\\um" 
+"-IC:\Program Files 
+(x86)\Windows Kits\10\\inclu
+de\10.0.22621.0\\shared" 
+"-IC:\Program Files 
+(x86)\Windows Kits\10\\inclu
+de\10.0.22621.0\\winrt" 
+"-IC:\Program Files 
+(x86)\Windows Kits\10\\inclu
+de\10.0.22621.0\\cppwinrt" 
+/Tcsrc\lxml\etree.c /Fobuild
+\temp.win-amd64-cpython-314\
+Release\src\lxml\etree.obj 
+-w
+  cl : Command line warning 
+D9025 : overriding '/W3' 
+with '/w'
+  etree.c
+  C:\Users\Day Computer\AppD
+ata\Local\Temp\pip-install-p
+t__4nrb\lxml_2763a80e72d849c
+b905b6a78c136c178\src\lxml\i
+ncludes/etree_defs.h(12): 
+fatal error C1083: Cannot 
+open include file: 
+'libxml/xmlversion.h': No 
+such file or directory
+  Compile failed: command 
+'C:\\Program Files 
+(x86)\\Microsoft Visual Stud
+io\\2022\\BuildTools\\VC\\To
+ols\\MSVC\\14.44.35207\\bin\
+\HostX86\\x64\\cl.exe' 
+failed with exit code 2
+  creating Users\DAYCOM~1\Ap
+pData\Local\Temp
+  "C:\Program Files 
+(x86)\Microsoft Visual Studi
+o\2022\BuildTools\VC\Tools\M
+SVC\14.44.35207\bin\HostX86\
+x64\cl.exe" /c /nologo /O2 
+/W3 /GL /DNDEBUG /MD 
+-I/usr/include/libxml2 
+"-IC:\Program Files 
+(x86)\Microsoft Visual Studi
+o\2022\BuildTools\VC\Tools\M
+SVC\14.44.35207\include" 
+"-IC:\Program Files 
+(x86)\Microsoft Visual Studi
+o\2022\BuildTools\VC\Auxilia
+ry\VS\include" 
+"-IC:\Program Files 
+(x86)\Windows Kits\10\includ
+e\10.0.22621.0\ucrt" 
+"-IC:\Program Files 
+(x86)\Windows Kits\10\\inclu
+de\10.0.22621.0\\um" 
+"-IC:\Program Files 
+(x86)\Windows Kits\10\\inclu
+de\10.0.22621.0\\shared" 
+"-IC:\Program Files 
+(x86)\Windows Kits\10\\inclu
+de\10.0.22621.0\\winrt" 
+"-IC:\Program Files 
+(x86)\Windows Kits\10\\inclu
+de\10.0.22621.0\\cppwinrt" /
+TcC:\Users\DAYCOM~1\AppData\
+Local\Temp\xmlXPathInitkfccd
+m3h.c /FoUsers\DAYCOM~1\AppD
+ata\Local\Temp\xmlXPathInitk
+fccdm3h.obj
+  xmlXPathInitkfccdm3h.c
+  C:\Users\DAYCOM~1\AppData\
+Local\Temp\xmlXPathInitkfccd
+m3h.c(1): fatal error 
+C1083: Cannot open include 
+file: 'libxml/xpath.h': No 
+such file or directory
+  **************************
+****************************
+***************************
+  Could not find function 
+xmlXPathInit in library 
+libxml2. Is libxml2 
+installed?
+  Is your C compiler 
+installed and configured 
+correctly?
+  **************************
+****************************
+***************************
+  error: command 
+'C:\\Program Files 
+(x86)\\Microsoft Visual Stud
+io\\2022\\BuildTools\\VC\\To
+ols\\MSVC\\14.44.35207\\bin\
+\HostX86\\x64\\cl.exe' 
+failed with exit code 2
+  [end of output]
+  
+  note: This error 
+originates from a 
+subprocess, and is likely 
+not a problem with pip.
+  ERROR: Failed building 
+wheel for lxml
+error: failed-wheel-build-fo
+r-install
+
+Failed to build installable 
+wheels for some 
+pyproject.toml based 
+projects
+
+lxml

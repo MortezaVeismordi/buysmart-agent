@@ -48,9 +48,10 @@ class BuySmartOrchestrator:
         Initialize the orchestrator and all sub-components.
 
         Args:
-            api_key: Anthropic API key. Falls back to ANTHROPIC_API_KEY env var.
+        Args:
+            api_key: LLM API key. Falls back to OPENROUTER_API_KEY or OPENAI_API_KEY.
         """
-        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        self.api_key = api_key or os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY") or os.getenv("ANTHROPIC_API_KEY")
         self.query_parser = QueryParser(api_key=self.api_key)
         self.crawler = ProductCrawlerSync(api_key=self.api_key)
         self.ranker = ProductRanker(api_key=self.api_key)

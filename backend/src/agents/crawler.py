@@ -1,9 +1,7 @@
 """
-Product Crawler Module
-Uses Crawl4AI's AsyncWebCrawler to scrape product data from e-commerce sites.
-Provides both async and sync interfaces for Django integration.
+Product Crawler - Uses Crawl4AI to extract product data from e-commerce sites.
+Compatible with Crawl4AI 0.3.74+
 """
-
 import asyncio
 import json
 import logging
@@ -14,10 +12,10 @@ from urllib.parse import urlparse
 
 from crawl4ai import AsyncWebCrawler
 from crawl4ai.extraction_strategy import LLMExtractionStrategy
+from crawl4ai import BrowserConfig, CrawlerRunConfig, CacheMode
 
 logger = logging.getLogger(__name__)
 
-# Schema instruction for the LLM extraction
 PRODUCT_EXTRACTION_INSTRUCTION = """
 Extract product information from this e-commerce page. For each product found,
 extract the following fields and return as a JSON array:
@@ -48,10 +46,7 @@ Rules:
 
 class ProductCrawler:
     """
-    Async product crawler using Crawl4AI.
-
-    Crawls e-commerce URLs and extracts structured product data
-    using LLM-powered extraction.
+    Async product crawler using Crawl4AI with OpenRouter support.
     """
 
     def __init__(self, api_key: str | None = None) -> None:
@@ -59,13 +54,13 @@ class ProductCrawler:
         Initialize the ProductCrawler.
 
         Args:
-            api_key: Anthropic API key for LLM extraction.
-                     Falls back to ANTHROPIC_API_KEY env var.
+            api_key: OpenRouter API key for LLM extraction.
+                     Falls back to OPENROUTER_API_KEY env var.
         """
-        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
         if not self.api_key:
             raise ValueError(
-                "Anthropic API key is required. Set ANTHROPIC_API_KEY environment "
+                "OpenRouter API key is required. Set OPENROUTER_API_KEY environment "
                 "variable or pass api_key parameter."
             )
 
@@ -78,24 +73,39 @@ class ProductCrawler:
 
         Returns:
             List of dictionaries containing crawl results with extracted products.
-            Each result has: url, domain, success, products, error.
         """
         results: list[dict[str, Any]] = []
 
-        extraction_strategy = LLMExtractionStrategy(
-            provider="anthropic/claude-sonnet-4-20250514",
+        # NEW: Use llm_config instead of provider
+        from crawl4ai import LLMConfig
+        
+        llm_config = LLMConfig(
+            provider="openrouter/meta-llama/llama-3.1-70b-instruct",
             api_token=self.api_key,
+        )
+
+        extraction_strategy = LLMExtractionStrategy(
+            llm_config=llm_config,
             instruction=PRODUCT_EXTRACTION_INSTRUCTION,
         )
 
-        async with AsyncWebCrawler(verbose=False) as crawler:
+        browser_config = BrowserConfig(
+            headless=True,
+            verbose=False,
+        )
+
+        crawler_config = CrawlerRunConfig(
+            cache_mode=CacheMode.BYPASS,
+            extraction_strategy=extraction_strategy,
+        )
+
+        async with AsyncWebCrawler(config=browser_config) as crawler:
             for i, url in enumerate(urls):
                 if i > 0:
-                    # Delay between requests to be respectful
                     await asyncio.sleep(2)
 
                 result = await self._crawl_single_url(
-                    crawler, url, extraction_strategy
+                    crawler, url, crawler_config
                 )
                 results.append(result)
 
@@ -111,27 +121,16 @@ class ProductCrawler:
         self,
         crawler: AsyncWebCrawler,
         url: str,
-        extraction_strategy: LLMExtractionStrategy,
+        config: CrawlerRunConfig,
     ) -> dict[str, Any]:
         """
         Crawl a single URL and extract products.
-
-        Args:
-            crawler: The AsyncWebCrawler instance.
-            url: URL to crawl.
-            extraction_strategy: LLM extraction strategy to use.
-
-        Returns:
-            Dictionary with url, domain, success flag, products list, and error.
         """
         domain = urlparse(url).netloc
         logger.info(f"Crawling: {url}")
 
         try:
-            crawl_result = await crawler.arun(
-                url=url,
-                extraction_strategy=extraction_strategy,
-            )
+            crawl_result = await crawler.arun(url=url, config=config)
 
             if not crawl_result.success:
                 logger.warning(f"Crawl failed for {url}: {crawl_result.error_message}")
@@ -171,53 +170,38 @@ class ProductCrawler:
     ) -> list[dict[str, Any]]:
         """
         Parse the LLM-extracted content into structured product data.
-
-        Args:
-            content: Raw extracted content string from crawl4ai.
-            domain: Source domain for the products.
-
-        Returns:
-            List of product dictionaries.
         """
         if not content:
             return []
 
         try:
-            # Try direct JSON parsing
             products = json.loads(content)
         except json.JSONDecodeError:
-            # Try extracting from markdown code blocks
             try:
                 code_block_pattern = r"```(?:json)?\s*\n?(.*?)\n?\s*```"
                 matches = re.findall(code_block_pattern, content, re.DOTALL)
                 if matches:
                     products = json.loads(matches[0].strip())
                 else:
-                    # Try finding JSON array pattern
                     array_pattern = r"\[.*\]"
                     matches = re.findall(array_pattern, content, re.DOTALL)
                     if matches:
                         products = json.loads(matches[0])
                     else:
-                        logger.warning(
-                            f"Could not parse extracted content from {domain}"
-                        )
+                        logger.warning(f"Could not parse extracted content from {domain}")
                         return []
             except (json.JSONDecodeError, IndexError) as e:
                 logger.warning(f"JSON parse error for {domain}: {e}")
                 return []
 
-        # Ensure we have a list
         if isinstance(products, dict):
             products = [products]
         elif not isinstance(products, list):
             return []
 
-        # Enrich each product with source domain
         for product in products:
             if isinstance(product, dict):
                 product["source_domain"] = domain
-                # Ensure required fields exist with defaults
                 product.setdefault("name", "Unknown Product")
                 product.setdefault("price", None)
                 product.setdefault("currency", "USD")
@@ -234,38 +218,16 @@ class ProductCrawler:
 class ProductCrawlerSync:
     """
     Synchronous wrapper around ProductCrawler for Django integration.
-
-    Django views and ORM operations run synchronously, so this wrapper
-    provides a sync interface to the async crawler.
     """
 
     def __init__(self, api_key: str | None = None) -> None:
-        """
-        Initialize the sync crawler wrapper.
-
-        Args:
-            api_key: Anthropic API key for LLM extraction.
-        """
         self.crawler = ProductCrawler(api_key=api_key)
 
     def crawl_urls(self, urls: list[str]) -> list[dict[str, Any]]:
-        """
-        Synchronously crawl a list of URLs.
-
-        Creates a new event loop if needed, or uses the existing one
-        with nest_asyncio for Jupyter/Django compatibility.
-
-        Args:
-            urls: List of URLs to crawl.
-
-        Returns:
-            List of crawl result dictionaries.
-        """
+        """Synchronously crawl a list of URLs."""
         try:
             loop = asyncio.get_event_loop()
             if loop.is_running():
-                # If there's already a running loop (e.g., in Jupyter or Django),
-                # create a new thread to run the async code
                 import concurrent.futures
                 with concurrent.futures.ThreadPoolExecutor() as executor:
                     future = executor.submit(
@@ -275,5 +237,4 @@ class ProductCrawlerSync:
             else:
                 return loop.run_until_complete(self.crawler.crawl_urls(urls))
         except RuntimeError:
-            # No event loop exists, create one
             return asyncio.run(self.crawler.crawl_urls(urls))

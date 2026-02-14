@@ -1,7 +1,6 @@
 """
 Query Parser Module
-Uses Anthropic Claude to parse natural language product queries
-into structured search intent.
+Uses OpenRouter to access Claude and other LLMs for parsing natural language queries.
 """
 
 import json
@@ -10,12 +9,11 @@ import re
 import logging
 from typing import Any
 from urllib.parse import quote_plus
-
-import anthropic
+import requests
 
 logger = logging.getLogger(__name__)
 
-# System prompt for Claude to extract structured intent from queries
+# System prompt for query parsing
 QUERY_PARSE_SYSTEM_PROMPT = """You are a product search query parser. Your job is to extract structured intent from natural language product queries.
 
 Given a user query, extract the following fields and return ONLY valid JSON (no markdown, no explanation):
@@ -42,27 +40,31 @@ Rules:
 
 class QueryParser:
     """
-    Parses natural language product queries using Anthropic Claude.
-
-    Extracts structured intent including product type, price range,
-    use case, requirements, and generates optimized search queries.
+    Parses natural language product queries using OpenRouter API.
+    Supports multiple LLM providers through OpenRouter.
     """
 
-    def __init__(self, api_key: str | None = None) -> None:
+    def __init__(self, api_key: str | None = None, model: str | None = None):
         """
-        Initialize the QueryParser with Anthropic API credentials.
+        Initialize the QueryParser with OpenRouter credentials.
 
         Args:
-            api_key: Anthropic API key. Falls back to ANTHROPIC_API_KEY env var.
+            api_key: OpenRouter API key. Falls back to OPENROUTER_API_KEY env var.
+            model: Model to use. Defaults to claude-3.5-sonnet via OpenRouter.
         """
-        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
         if not self.api_key:
             raise ValueError(
-                "Anthropic API key is required. Set ANTHROPIC_API_KEY environment "
+                "OpenRouter API key is required. Set OPENROUTER_API_KEY environment "
                 "variable or pass api_key parameter."
             )
-        self.client = anthropic.Anthropic(api_key=self.api_key)
-        self.model = "claude-sonnet-4-20250514"
+        
+        # Default to Claude 3.5 Sonnet via OpenRouter
+        self.model = model or os.getenv(
+            "OPENROUTER_MODEL", 
+            "anthropic/claude-3.5-sonnet"
+        )
+        self.api_url = "https://openrouter.ai/api/v1/chat/completions"
 
     def parse_query(self, query_text: str) -> dict[str, Any]:
         """
@@ -76,23 +78,38 @@ class QueryParser:
 
         Raises:
             ValueError: If the query cannot be parsed.
-            anthropic.APIError: If the API call fails.
         """
         try:
             logger.info(f"Parsing query: {query_text[:100]}...")
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=1024,
-                system=QUERY_PARSE_SYSTEM_PROMPT,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": f"Parse this product search query: {query_text}",
-                    }
-                ],
+            
+            response = requests.post(
+                self.api_url,
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://buysmart-agent.local",  # Optional
+                    "X-Title": "BuySmart Agent"  # Optional
+                },
+                json={
+                    "model": self.model,
+                    "messages": [
+                        {
+                            "role": "system",
+                            "content": QUERY_PARSE_SYSTEM_PROMPT
+                        },
+                        {
+                            "role": "user",
+                            "content": f"Parse this product search query: {query_text}"
+                        }
+                    ],
+                    "temperature": 0.3,
+                    "max_tokens": 1000
+                },
+                timeout=30
             )
-
-            raw_content = response.content[0].text
+            
+            response.raise_for_status()
+            raw_content = response.json()["choices"][0]["message"]["content"]
             parsed = self._extract_json(raw_content)
 
             # Ensure search_queries exists
@@ -105,11 +122,11 @@ class QueryParser:
             )
             return parsed
 
-        except anthropic.APIError as e:
-            logger.error(f"Anthropic API error while parsing query: {e}")
-            raise
-        except (json.JSONDecodeError, ValueError) as e:
-            logger.error(f"Failed to parse Claude response: {e}")
+        except requests.exceptions.RequestException as e:
+            logger.error(f"OpenRouter API error while parsing query: {e}")
+            raise ValueError(f"Failed to parse query: {e}") from e
+        except (json.JSONDecodeError, KeyError, ValueError) as e:
+            logger.error(f"Failed to parse OpenRouter response: {e}")
             raise ValueError(f"Could not parse query response: {e}") from e
 
     def generate_search_urls(self, parsed_intent: dict[str, Any]) -> list[str]:
@@ -136,24 +153,20 @@ class QueryParser:
             encoded_query = quote_plus(query)
 
             # Amazon search URL
-            urls.append(
-                f"https://www.amazon.com/s?k={encoded_query}"
-            )
+            urls.append(f"https://www.amazon.com/s?k={encoded_query}")
 
             # Best Buy search URL
-            urls.append(
-                f"https://www.bestbuy.com/site/searchpage.jsp?st={encoded_query}"
-            )
+            urls.append(f"https://www.bestbuy.com/site/searchpage.jsp?st={encoded_query}")
 
         logger.info(f"Generated {len(urls)} search URLs from parsed intent.")
         return urls
 
     def _extract_json(self, raw_text: str) -> dict[str, Any]:
         """
-        Extract JSON from Claude's response, handling markdown code blocks.
+        Extract JSON from LLM response, handling markdown code blocks.
 
         Args:
-            raw_text: Raw text response from Claude.
+            raw_text: Raw text response from LLM.
 
         Returns:
             Parsed JSON dictionary.
@@ -167,7 +180,7 @@ class QueryParser:
         except json.JSONDecodeError:
             pass
 
-        # Try extracting from markdown code blocks (```json ... ``` or ``` ... ```)
+        # Try extracting from markdown code blocks
         code_block_pattern = r"```(?:json)?\s*\n?(.*?)\n?\s*```"
         matches = re.findall(code_block_pattern, raw_text, re.DOTALL)
         if matches:

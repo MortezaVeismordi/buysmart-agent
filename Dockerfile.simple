@@ -1,0 +1,21 @@
+# فایل: Dockerfile.simple (در ریشه پروژه)
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    build-essential libpq-dev wget \
+    libnss3 libatk1.0-0 libcups2 libdrm2 \
+    libxkbcommon0 libxcomposite1 libxdamage1 \
+    libgbm1 libpango-1.0-0 libcairo2 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY backend/requirements /app/requirements
+RUN pip install --upgrade pip && \
+    pip install -r requirements/base.txt && \
+    playwright install chromium && \
+    playwright install-deps
+
+COPY backend /app
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

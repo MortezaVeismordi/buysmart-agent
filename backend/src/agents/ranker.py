@@ -1,7 +1,6 @@
 """
 Product Ranker Module
-Uses Anthropic Claude to analyze, rank, and compare products
-based on user requirements and preferences.
+Uses OpenRouter to access Claude and other LLMs for ranking products.
 """
 
 import json
@@ -9,8 +8,7 @@ import logging
 import os
 import re
 from typing import Any
-
-import anthropic
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -40,56 +38,46 @@ Return ONLY valid JSON (no markdown, no explanation) in this format:
 }
 
 Scoring criteria (total 100 points):
-- Price/Value: 25 points (how well priced for what you get)
-- Features Match: 25 points (how well it matches user requirements)
-- Quality/Rating: 20 points (based on reviews and ratings)
-- Brand Reputation: 15 points (reliability and customer service)
-- Availability: 15 points (in stock, shipping, warranty)
+- Price/Value: 25 points
+- Features Match: 25 points
+- Quality/Rating: 20 points
+- Brand Reputation: 15 points
+- Availability: 15 points
 
 Rules:
-- Score each product 0-100 based on the criteria above
-- Be objective and honest about pros/cons
-- Consider the user's specific requirements and budget
-- Products should be ranked from highest to lowest score
+- Score each product 0-100
+- Be objective about pros/cons
+- Consider user's requirements and budget
+- Rank from highest to lowest score
 - Return ONLY valid JSON
-"""
-
-COMPARISON_SUMMARY_PROMPT = """You are a product comparison expert. Create a clear, well-formatted markdown summary comparing the following products for the user.
-
-Include:
-1. A brief overview of the search
-2. Top recommendation with reasoning
-3. Quick comparison table
-4. Detailed analysis of top 3 products
-5. Final verdict
-
-Be concise, helpful, and data-driven. Format in clean markdown.
 """
 
 
 class ProductRanker:
     """
-    Ranks and compares products using Anthropic Claude.
-
-    Provides detailed scoring, pros/cons analysis, and comparison
-    summaries for crawled products.
+    Ranks and compares products using OpenRouter API.
     """
 
-    def __init__(self, api_key: str | None = None) -> None:
+    def __init__(self, api_key: str | None = None, model: str | None = None):
         """
         Initialize the ProductRanker.
 
         Args:
-            api_key: Anthropic API key. Falls back to ANTHROPIC_API_KEY env var.
+            api_key: OpenRouter API key. Falls back to OPENROUTER_API_KEY env var.
+            model: Model to use. Defaults to Claude 3.5 Sonnet.
         """
-        self.api_key = api_key or os.getenv("ANTHROPIC_API_KEY")
+        self.api_key = api_key or os.getenv("OPENROUTER_API_KEY")
         if not self.api_key:
             raise ValueError(
-                "Anthropic API key is required. Set ANTHROPIC_API_KEY environment "
+                "OpenRouter API key is required. Set OPENROUTER_API_KEY environment "
                 "variable or pass api_key parameter."
             )
-        self.client = anthropic.Anthropic(api_key=self.api_key)
-        self.model = "claude-sonnet-4-20250514"
+        
+        self.model = model or os.getenv(
+            "OPENROUTER_MODEL",
+            "anthropic/claude-3.5-sonnet"
+        )
+        self.api_url = "https://openrouter.ai/api/v1/chat/completions"
 
     def rank_products(
         self,
@@ -107,10 +95,6 @@ class ProductRanker:
 
         Returns:
             Dictionary with rankings, scores, and analysis.
-
-        Raises:
-            ValueError: If no products to rank or response cannot be parsed.
-            anthropic.APIError: If the API call fails.
         """
         if not products:
             logger.warning("No products to rank.")
@@ -125,29 +109,43 @@ class ProductRanker:
         try:
             logger.info(f"Ranking {len(products)} products for query: {user_query[:80]}")
 
-            # Build the products summary for the LLM
             products_text = self._format_products_for_llm(products)
 
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=4096,
-                system=RANKING_SYSTEM_PROMPT,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": (
-                            f"User Query: {user_query}\n\n"
-                            f"Parsed Intent: {json.dumps(parsed_intent, indent=2)}\n\n"
-                            f"Products to rank:\n{products_text}"
-                        ),
-                    }
-                ],
+            response = requests.post(
+                self.api_url,
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://buysmart-agent.local",
+                    "X-Title": "BuySmart Agent"
+                },
+                json={
+                    "model": self.model,
+                    "messages": [
+                        {
+                            "role": "system",
+                            "content": RANKING_SYSTEM_PROMPT
+                        },
+                        {
+                            "role": "user",
+                            "content": (
+                                f"User Query: {user_query}\n\n"
+                                f"Parsed Intent: {json.dumps(parsed_intent, indent=2)}\n\n"
+                                f"Products to rank:\n{products_text}"
+                            )
+                        }
+                    ],
+                    "temperature": 0.3,
+                    "max_tokens": 4000
+                },
+                timeout=60
             )
 
-            raw_content = response.content[0].text
+            response.raise_for_status()
+            raw_content = response.json()["choices"][0]["message"]["content"]
             ranking_result = self._extract_json(raw_content)
 
-            # Sort rankings by score (highest first)
+            # Sort rankings by score
             if "rankings" in ranking_result:
                 ranking_result["rankings"].sort(
                     key=lambda x: x.get("score", 0), reverse=True
@@ -159,10 +157,10 @@ class ProductRanker:
             )
             return ranking_result
 
-        except anthropic.APIError as e:
-            logger.error(f"Anthropic API error during ranking: {e}")
-            raise
-        except (json.JSONDecodeError, ValueError) as e:
+        except requests.exceptions.RequestException as e:
+            logger.error(f"OpenRouter API error during ranking: {e}")
+            raise ValueError(f"Failed to rank products: {e}") from e
+        except (json.JSONDecodeError, KeyError, ValueError) as e:
             logger.error(f"Failed to parse ranking response: {e}")
             raise ValueError(f"Could not parse ranking response: {e}") from e
 
@@ -187,44 +185,44 @@ class ProductRanker:
             products_text = self._format_products_for_llm(products)
             rankings_text = json.dumps(rankings, indent=2)
 
-            response = self.client.messages.create(
-                model=self.model,
-                max_tokens=4096,
-                system=COMPARISON_SUMMARY_PROMPT,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": (
-                            f"User Query: {user_query}\n\n"
-                            f"Products:\n{products_text}\n\n"
-                            f"Rankings:\n{rankings_text}\n\n"
-                            "Please create a comprehensive markdown comparison summary."
-                        ),
-                    }
-                ],
+            response = requests.post(
+                self.api_url,
+                headers={
+                    "Authorization": f"Bearer {self.api_key}",
+                    "Content-Type": "application/json",
+                },
+                json={
+                    "model": self.model,
+                    "messages": [
+                        {
+                            "role": "system",
+                            "content": "Create a comprehensive markdown comparison summary."
+                        },
+                        {
+                            "role": "user",
+                            "content": (
+                                f"User Query: {user_query}\n\n"
+                                f"Products:\n{products_text}\n\n"
+                                f"Rankings:\n{rankings_text}\n\n"
+                                "Please create a comprehensive markdown comparison summary."
+                            )
+                        }
+                    ],
+                    "max_tokens": 2000
+                },
+                timeout=30
             )
 
-            summary = response.content[0].text
+            summary = response.json()["choices"][0]["message"]["content"]
             logger.info("Comparison summary generated successfully.")
             return summary
 
-        except anthropic.APIError as e:
-            logger.error(f"Anthropic API error generating summary: {e}")
-            return self._generate_fallback_summary(rankings)
         except Exception as e:
             logger.error(f"Error generating comparison summary: {e}")
             return self._generate_fallback_summary(rankings)
 
     def _format_products_for_llm(self, products: list[dict[str, Any]]) -> str:
-        """
-        Format product list into a readable text for the LLM.
-
-        Args:
-            products: List of product dictionaries.
-
-        Returns:
-            Formatted string representation of products.
-        """
+        """Format product list into readable text for the LLM."""
         formatted_parts: list[str] = []
         for i, product in enumerate(products):
             part = (
@@ -241,55 +239,32 @@ class ProductRanker:
         return "\n".join(formatted_parts)
 
     def _extract_json(self, raw_text: str) -> dict[str, Any]:
-        """
-        Extract JSON from Claude's response, handling markdown code blocks.
-
-        Args:
-            raw_text: Raw text response from Claude.
-
-        Returns:
-            Parsed JSON dictionary.
-
-        Raises:
-            ValueError: If no valid JSON can be extracted.
-        """
-        # Try direct JSON parsing first
+        """Extract JSON from LLM response."""
         try:
             return json.loads(raw_text.strip())
         except json.JSONDecodeError:
             pass
 
-        # Try extracting from markdown code blocks
+        # Try markdown code blocks
         code_block_pattern = r"```(?:json)?\s*\n?(.*?)\n?\s*```"
         matches = re.findall(code_block_pattern, raw_text, re.DOTALL)
         if matches:
             return json.loads(matches[0].strip())
 
-        # Try finding JSON object pattern
+        # Try JSON object pattern
         json_pattern = r"\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}"
         matches = re.findall(json_pattern, raw_text, re.DOTALL)
         if matches:
-            # Try the largest match (most likely the full response)
             for match in sorted(matches, key=len, reverse=True):
                 try:
                     return json.loads(match)
                 except json.JSONDecodeError:
                     continue
 
-        raise ValueError(
-            f"Could not extract valid JSON from response: {raw_text[:200]}"
-        )
+        raise ValueError(f"Could not extract valid JSON from response: {raw_text[:200]}")
 
     def _generate_fallback_summary(self, rankings: dict[str, Any]) -> str:
-        """
-        Generate a basic summary when the LLM summary fails.
-
-        Args:
-            rankings: Ranking results dictionary.
-
-        Returns:
-            Basic markdown summary.
-        """
+        """Generate basic summary when LLM summary fails."""
         lines = ["# Product Comparison Summary\n"]
 
         if rankings.get("best_overall"):
@@ -305,8 +280,5 @@ class ProductRanker:
                 lines.append(f"- **{name}** — Score: {score}/100")
                 if rank_info.get("reasoning"):
                     lines.append(f"  - {rank_info['reasoning']}")
-
-        if rankings.get("overall_summary"):
-            lines.append(f"\n## Summary\n{rankings['overall_summary']}")
 
         return "\n".join(lines)

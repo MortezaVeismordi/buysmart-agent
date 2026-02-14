@@ -1,23 +1,24 @@
-version: '3.9'
-
 services:
   backend:
     build:
-      context: ../../backend
-      dockerfile: ../infra/docker/backend.Dockerfile
-
+      context: ../../..
+      dockerfile: platform/infra/docker/backend.Dockerfile
     command: >
       sh -c "python manage.py migrate &&
              python manage.py runserver 0.0.0.0:8000"
     volumes:
-      - ../../backend:/app
+      - ../../../backend:/app/backend
+    working_dir: /app/backend
     ports:
       - "8000:8000"
     env_file:
-      - ../../.env
+      - ../../../.env
     environment:
-      - DJANGO_SETTINGS_MODULE=config.settings.local
+      - DJANGO_SETTINGS_MODULE=src.config.settings.local
       - PYTHONUNBUFFERED=1
+      - POSTGRES_HOST=db
+      - POSTGRES_PORT=5432
+      - REDIS_URL=redis://redis:6379/0
     depends_on:
       db:
         condition: service_healthy
@@ -32,15 +33,15 @@ services:
     container_name: buysmart-db-local
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-buysmart_agent}
-      POSTGRES_USER: ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: buysmart
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "5433:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d buysmart" ]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -52,7 +53,7 @@ services:
     container_name: buysmart-redis-local
     restart: unless-stopped
     ports:
-      - "6378:6379"
+      - "6379:6379"
     volumes:
       - redis_data:/data
     healthcheck:
